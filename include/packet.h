@@ -181,4 +181,28 @@ int receive_icmp_v6(int sockfd, struct sockaddr_in6 * address, struct timeval * 
 
 void icmp6_checksum_packet_print(icmp6_checksum_packet * packet);
 
+/**
+ * \brief Paquet IPv4 TCP.
+ */
+typedef struct tcp4_packet
+{
+	iphdr ip_header;/**<- Header IP. */
+	tcphdr tcp_header;/**<- Header TCP. */
+}tcp4_packet;
+
+/**
+ * \brief Initialisation du paquet IPv4 + TCP
+ * \param[in,out] t Paquet IPv4 + TCP.
+ * \param address Adresse de destination.
+ */
+int tcp4_packet_init(tcp4_packet * t, u_int32_t address);
+
+/**
+ * \brief Afficher un paquet IPv4 + TCP.
+ * \param t Paquet IPv4 + TCP à afficher.
+ *
+ * Surtout pour du debug...
+ */
+void tcp4_packet_print(const tcp4_packet * t);
+
 #endif /* __PACKET_H */

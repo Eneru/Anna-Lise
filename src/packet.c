@@ -271,3 +271,56 @@ void icmp6_checksum_packet_print(icmp6_checksum_packet * packet)
     fake_ip6_hdr_print(ip_header);
     icmp_print((icmphdr *) icmp_header);
 }
+
+int tcp4_packet_init(tcp4_packet * t, u_int32_t address)
+{
+	int success = check_pointer(t);
+
+    if (success != 0)
+        return success;
+
+    memset(packet, 0, sizeof (*packet));
+    iphdr * ip_header = &t->ip_header;
+    tcphdr * tcp_header = &t->tcp_header;
+
+    succeed_or_die(success, 0, iphdr_set_version(ip_header));
+    succeed_or_die(success, 0, iphdr_set_header_length(ip_header, 5));
+    succeed_or_die(success, 0, iphdr_set_type_of_service(ip_header, 0));
+    succeed_or_die(success, 0, iphdr_set_total_length(ip_header, sizeof (tcp4_packet)));
+    succeed_or_die(success, 0, iphdr_set_id(ip_header, 0));
+    succeed_or_die(success, 0, iphdr_set_fragment_offset(ip_header, 0));
+    succeed_or_die(success, 0, iphdr_set_ttl(ip_header, IPDEFTTL));
+    succeed_or_die(success, 0, iphdr_set_protocol(ip_header, IPPROTO_TCP));
+
+    struct sockaddr_in address;
+    succeed_or_die(success, 0, get_source_ipv4(IPPROTO_TCP, &address));
+    succeed_or_die(success, 0, iphdr_set_source_address(ip_header, extract_ipv4(&address)));
+
+    succeed_or_die(success, 0, iphdr_set_dest_address(ip_header, dest_address));
+    /* À faire en dernier. */
+    succeed_or_die(success, 0, iphdr_checksum(ip_header));
+    
+    succeed_or_die(success, 0, tcp_set_port_source(t,0)); // initialisé plus tard
+    succeed_or_die(success, 0, tcp_set_port_destination(htons(23)));
+    succeed_or_die(success, 0, tcp_set_seq(t,0));
+    succeed_or_die(success, 0, tcp_set_ack(t,0));
+    succeed_or_die(success, 0, tcp_set_reserved1(t,0));
+    succeed_or_die(success, 0, tcp_set_offset(t,sizeof(tcphdr)));
+    succeed_or_die(success, 0, tcp_set_fin(t,0));
+    succeed_or_die(success, 0, tcp_set_syn(t,1)); // synchronisation
+    succeed_or_die(success, 0, tcp_set_rst(t,0));
+    succeed_or_die(success, 0, tcp_set_psh(t,0));
+    succeed_or_die(success, 0, tcp_set_urg(t,0));
+    succeed_or_die(success, 0, tcp_set_reserved2(t,0));
+    succeed_or_die(success, 0, tcp_set_window(t,htons(16384)));
+    succeed_or_die(success, 0, tcp_set_check(t,0));
+    succeed_or_die(success, 0, tcp_set_urg_ptr(t,0));
+    
+    return success;
+}
+
+void tcp4_packet_print(const tcp4_packet * t)
+{
+	iphdr_print(&t->ip_header);
+    tcp_print(&t->tcp_header);
+}
