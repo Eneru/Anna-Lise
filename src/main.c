@@ -12,7 +12,7 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://www.wtfpl.net/ for more details.
  */
-#include "ping_icmp.h"
+#include "ping_tcp.h"
 
 
 int fin_des_temps = 1;
@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
         print_version();
     else
     {
-		icmp4_packet p;
+		tcp4_packet p;
 		connexion c;
 		info_addr ia;
 		compteur cpt;
@@ -91,11 +91,11 @@ int main(int argc, char ** argv)
 		sa.sa_flags = 0;
 		sigaction(SIGINT,&sa,NULL);
     
-		init_domaine_IPv4(&p,&c,&ia,dest,&cpt);
+		init_tcp4_ping(&p,&c,&ia,dest,&cpt);
 		
 		while(fin_des_temps)
 		{
-			pi_ng_choix_sleep_et_attente_reception(&p,&c,&cpt,1,0,1,0);
+			pi_ng_tcp_choix_sleep_et_attente_reception(&p,&c,&cpt,1,0,1,0);
 		}
 
 		gettimeofday(&fin_total,NULL);

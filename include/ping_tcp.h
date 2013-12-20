@@ -37,16 +37,6 @@
 #include "ping_icmp.h"
 
 /**
- * \brief Structure de connexion à une adresse.
- */
-typedef struct connexion_tcp
-{
-	int sockfd;/**<- Socket de connexion.*/
-	struct sockaddr_in addr;/**<- Adresse de connexion.*/
-	u_int16_t port_destination;
-} connexion_tcp;
-
-/**
  * \brief Initialisation des différentes structures et création d'un paquet tcp4_packet.
  * \param[in,out] t Paquet TCP + IPv4.
  * \param[in,out] c Connexion à la destination.
@@ -56,6 +46,42 @@ typedef struct connexion_tcp
  */
 void init_tcp4_ping (tcp4_packet * t, connexion * c, info_addr * ia, char * dest, compteur * cpt);
 
+/**
+ * \brief Envoie d'un paquet RAW en TCP.
+ * \param[in,out] c Connexion à la destination.
+ * \param[in,out] t Paquet TCP + IPv4.
+ * \param[in,out] cpt Compteur de RTT et nombre des paquets reçus/transmis.
+ */
+void send_paquet_TCP (connexion * c, tcp4_packet * t, compteur * cpt);
 
+/**
+ * \brief Réponse du paquet par une réception d'un paquet IP.
+ * \param[in,out] c Connexion à la destination.
+ * \param[in,out] cpt Compteur de RTT et nombre des paquets reçus/transmis.
+ * \param[in,out] tv Temps d'attente de réception.
+ */
+void answer_send_TCP (connexion * c, compteur * cpt, struct timeval * tv);
+
+/**
+ * \brief Fonction réalisant l'affichage et l'application de Ping en TCP.
+ * \param[in,out] t Paquet TCP + IPv4.
+ * \param[in,out] c Connexion à la destination.
+ * \param[in,out] cpt Compteur de RTT et nombre des paquets reçus/transmis.
+ * \param[in,out] req Temps d'attente du sleep.
+ * \param[in,out] tv Temps d'attente de la réception.
+ */
+void pi_ng_tcp(tcp4_packet * t, connexion * c, compteur * cpt, struct timespec * req, struct timeval * tv);
+
+/**
+ * \brief Fonction réalisant l'affichage et l'application de Ping avec le choix précis des attentes en TCP.
+ * \param[in,out] t Paquet TCP + IPv4.
+ * \param[in,out] c Connexion à la destination.
+ * \param[in,out] cpt Compteur de RTT et nombre des paquets reçus/transmis.
+ * \param secondes_sleep secondes d'attente du sleep.
+ * \param nanosecondes_sleep nanosecondes d'attente du sleep.
+ * \param secondes_rec secondes d'attente de réception.
+ * \param nanosecondes_sleep microsecondes d'attente de réception.
+ */
+void pi_ng_tcp_choix_sleep_et_attente_reception(tcp4_packet * t, connexion * c, compteur * cpt, time_t secondes_sleep, long nanosecondes_sleep, int secondes_rec, int microsecondes_rec);
 
 #endif /* __PING_TCP_H */

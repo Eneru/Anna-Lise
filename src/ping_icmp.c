@@ -78,7 +78,7 @@ void affichage_fin (info_addr * ia, compteur * cpt, struct timeval total)
 	printf("rtt min/avg/max = %.3Lf/%.3Lf/%.3Lf\n",cpt->min,cpt->sum/cpt->paquets_recus,cpt->max);
 }
 
-void pi_ng(icmp4_packet * p, connexion * c, compteur * cpt, struct timespec * req, struct timeval * tv)
+void pi_ng_icmp(icmp4_packet * p, connexion * c, compteur * cpt, struct timespec * req, struct timeval * tv)
 {
 	struct timeval debut, fin, diff;
 	int avant = cpt->paquets_recus;
@@ -99,7 +99,7 @@ void pi_ng(icmp4_packet * p, connexion * c, compteur * cpt, struct timespec * re
     nanosleep(req,NULL);
 }
 
-void pi_ng_choix_sleep_et_attente_reception(icmp4_packet * p, connexion * c, compteur * cpt, time_t secondes_sleep, long nanosecondes_sleep, int secondes_rec, int microsecondes_rec)
+void pi_ng_icmp_choix_sleep_et_attente_reception(icmp4_packet * p, connexion * c, compteur * cpt, time_t secondes_sleep, long nanosecondes_sleep, int secondes_rec, int microsecondes_rec)
 {
 	struct timespec req = {secondes_sleep,nanosecondes_sleep};
 	struct timeval tv = {secondes_rec,microsecondes_rec};

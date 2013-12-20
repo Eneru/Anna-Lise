@@ -147,4 +147,12 @@ int tcp_set_urg_ptr (tcphdr * t, u_int16_t adresse_pointeur_urgent);
  */
 void tcp_print (tcphdr * t);
 
+typedef struct fake_tcp_packet
+{
+    fake_iphdr ip_header;
+    tcphdr tcp_header;
+} fake_tcp_packet;
+
+int tcp_checksum(iphdr * ip_header, tcphdr * tcp_header);
+
 #endif /* __ICMP_UTIL_H */

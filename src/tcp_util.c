@@ -132,3 +132,23 @@ void tcp_print (tcphdr * t)
 		printf("\t-Validité paquet: %d\n",t->check);
 		printf("\t-Adresse du paquet urgent: %d\n",t->urg_ptr);
 }
+
+
+int tcp_checksum (iphdr * ip_header, tcphdr * tcp_header)
+{
+	int success = -1;
+    tcphdr t = *tcp_header;
+    t.check = 0;
+    fake_iphdr f = (fake_iphdr) { 0, 0, 0, IPPROTO_TCP, ip_header->tot_len };
+    fake_tcp_packet fake = (fake_tcp_packet) { f, t };
+
+    fake.tcp_header.check = checksum(&fake, sizeof fake / 2);
+    int check = checksum(&fake, sizeof fake / 2);
+    if (check == 0)
+    {
+        tcp_header->check = fake.tcp_header.check;
+        success = 0;
+    }
+
+    return success;
+}

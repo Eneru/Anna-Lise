@@ -136,23 +136,8 @@ int udp4_packet_init(udp4_packet * packet, struct sockaddr_in * address)
     memset(packet, 0, sizeof (*packet));
     iphdr * ip_header = &packet->ip_header;
     udphdr * udp_header = &packet->udp_header;
-
-    succeed_or_die(success, 0, iphdr_set_version(ip_header));
-    succeed_or_die(success, 0, iphdr_set_header_length(ip_header, 5));
-    succeed_or_die(success, 0, iphdr_set_type_of_service(ip_header, 0));
-    succeed_or_die(success, 0, iphdr_set_total_length(ip_header, sizeof * packet));
-    succeed_or_die(success, 0, iphdr_set_id(ip_header, 0));
-    succeed_or_die(success, 0, iphdr_set_fragment_offset(ip_header, 0));
-    succeed_or_die(success, 0, iphdr_set_ttl(ip_header, IPDEFTTL));
-    succeed_or_die(success, 0, iphdr_set_protocol(ip_header, IPPROTO_UDP));
-
-    struct sockaddr_in source;
-    succeed_or_die(success, 0, get_source_ipv4(IPPROTO_UDP, &source));
-    succeed_or_die(success, 0, iphdr_set_source_address(ip_header, extract_ipv4(&source)));
-
-    succeed_or_die(success, 0, iphdr_set_dest_address(ip_header, extract_ipv4(address)));
-    /* À faire en dernier. */
-    succeed_or_die(success, 0, iphdr_checksum(ip_header));
+	
+	succeed_or_die(success, 0, iphdr_init(ip_header, IPPROTO_UDP, extract_ipv4(address)));
 
     *udp_header = (udphdr) { 0, 8, sizeof *udp_header, 0 };
     succeed_or_die(success, 0, udp_checksum(ip_header, udp_header));
@@ -325,23 +310,8 @@ int tcp4_packet_init(tcp4_packet * t, u_int32_t address)
     memset(packet, 0, sizeof (*packet));
     iphdr * ip_header = &t->ip_header;
     tcphdr * tcp_header = &t->tcp_header;
-
-    succeed_or_die(success, 0, iphdr_set_version(ip_header));
-    succeed_or_die(success, 0, iphdr_set_header_length(ip_header, 5));
-    succeed_or_die(success, 0, iphdr_set_type_of_service(ip_header, 0));
-    succeed_or_die(success, 0, iphdr_set_total_length(ip_header, sizeof (tcp4_packet)));
-    succeed_or_die(success, 0, iphdr_set_id(ip_header, 0));
-    succeed_or_die(success, 0, iphdr_set_fragment_offset(ip_header, 0));
-    succeed_or_die(success, 0, iphdr_set_ttl(ip_header, IPDEFTTL));
-    succeed_or_die(success, 0, iphdr_set_protocol(ip_header, IPPROTO_TCP));
-
-    struct sockaddr_in address;
-    succeed_or_die(success, 0, get_source_ipv4(IPPROTO_TCP, &address));
-    succeed_or_die(success, 0, iphdr_set_source_address(ip_header, extract_ipv4(&address)));
-
-    succeed_or_die(success, 0, iphdr_set_dest_address(ip_header, dest_address));
-    /* À faire en dernier. */
-    succeed_or_die(success, 0, iphdr_checksum(ip_header));
+	
+	succeed_or_die(success, 0, iphdr_init(ip_header,IPPROTO_TCP,address));
     
     succeed_or_die(success, 0, tcp_set_port_source(t,0)); // initialisé plus tard
     succeed_or_die(success, 0, tcp_set_port_destination(htons(23)));

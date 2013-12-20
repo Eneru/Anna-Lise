@@ -19,8 +19,8 @@ vpath %.a $(LPATH)/
 
 all: anna-lise
 
-anna-lise: main.o libanna.a ping_icmp.o | bin
-		$(CC) $(CFLAGS) $(LFLAGS) -o $(BPATH)/$@ $(OPATH)/main.o $(OPATH)/ping_icmp.o -lanna
+anna-lise: main.o libanna.a ping_icmp.o ping_tcp.o tcp_util.o| bin
+		$(CC) $(CFLAGS) $(LFLAGS) -o $(BPATH)/$@ $(OPATH)/main.o $(OPATH)/ping_icmp.o $(OPATH)/ping_tcp.o $(OPATH)/tcp_util.o -lanna
 
 tests: unit_tests other_tests
 
@@ -40,15 +40,17 @@ test_traceroute: test_traceroute.o libanna.a | bin
 
 # Anna-lise
 main.o: main.c base.h address.h icmp_util.h ip_util.h packet.h ping_icmp.h
+ping_tcp.o: ping_tcp.c ping_tcp.h base.h address.h icmp_util.h ip_util.h packet.h time_util.h ping_icmp.h
 ping_icmp.o: ping_icmp.c ping_icmp.h base.h address.h icmp_util.h ip_util.h packet.h time_util.h
 address.o: address.c address.h base.h
 icmp_util.o: icmp_util.c icmp_util.h base.h checksum.h
 ip_util.o: ip_util.c ip_util.h base.h address.h checksum.h
-packet.o: packet.c packet.h base.h icmp_util.h ip_util.h address.h
+packet.o: packet.c packet.h base.h icmp_util.h ip_util.h tcp_util.h address.h
 checksum.o: checksum.c checksum.h
 traceroute.o: traceroute.c traceroute.h base.h address.h packet.h time_util.h
 time_util.o: time_util.c time_util.h base.h
 udp_util.o: udp_util.c udp_util.h base.h ip_util.h address.h
+tcp_util.o: tcp_util.c tcp_util.h base.h ip_util.h address.h
 
 libanna.a: address.o icmp_util.o ip_util.o packet.o checksum.o traceroute.o time_util.o udp_util.o | lib
 		ar -crv $(LPATH)/libanna.a $(OPATH)/address.o $(OPATH)/icmp_util.o $(OPATH)/ip_util.o $(OPATH)/packet.o $(OPATH)/checksum.o $(OPATH)/traceroute.o $(OPATH)/time_util.o $(OPATH)/udp_util.o

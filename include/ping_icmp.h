@@ -129,7 +129,7 @@ void affichage_fin (info_addr * ia, compteur * cpt, struct timeval total);
  * \param[in,out] req Temps d'attente du sleep.
  * \param[in,out] tv Temps d'attente de la réception.
  */
-void pi_ng(icmp4_packet * p, connexion * c, compteur * cpt, struct timespec * req, struct timeval * tv);
+void pi_ng_icmp(icmp4_packet * p, connexion * c, compteur * cpt, struct timespec * req, struct timeval * tv);
 
 /**
  * \brief Fonction réalisant l'affichage et l'application de Ping avec le choix précis des attentes.
@@ -141,6 +141,6 @@ void pi_ng(icmp4_packet * p, connexion * c, compteur * cpt, struct timespec * re
  * \param secondes_rec secondes d'attente de réception.
  * \param nanosecondes_sleep microsecondes d'attente de réception.
  */
-void pi_ng_choix_sleep_et_attente_reception(icmp4_packet * p, connexion * c, compteur * cpt, time_t secondes_sleep, long nanosecondes_sleep, int secondes_rec, int microsecondes_rec);
+void pi_ng_icmp_choix_sleep_et_attente_reception(icmp4_packet * p, connexion * c, compteur * cpt, time_t secondes_sleep, long nanosecondes_sleep, int secondes_rec, int microsecondes_rec);
 
 #endif /* __PING_ICMP_H */
